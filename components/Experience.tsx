@@ -128,6 +128,13 @@ export default function Experience() {
     exit: { opacity: 0, y: reduce ? 0 : -10, filter: reduce ? "none" : "blur(4px)" },
   };
 
+  /* intro items animate as one coordinated stagger sequence even though the
+     mobile layout splits them across the logo with a spacer in between */
+  const introItemVariant = {
+    hidden: { opacity: 0, y: reduce ? 0 : 18, filter: reduce ? "none" : "blur(8px)" },
+    show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.75, ease } },
+  };
+
   /* local scrim behind text-heavy blocks, so content defends its own
      legibility instead of depending on whatever the scene is doing */
   const contentScrim = {
@@ -207,7 +214,7 @@ export default function Experience() {
       </div>
 
       {/* ---------- content ---------- */}
-      <main className="relative z-20 flex min-h-[100dvh] flex-col items-center justify-end px-5 pb-10 pt-24 sm:justify-center sm:px-8 sm:pb-16">
+      <main className="relative z-20 flex min-h-[100dvh] flex-col justify-between px-5 pb-16 pt-20 sm:justify-center sm:px-8">
         <AnimatePresence mode="wait">
           {/* ---- forming ---- */}
           {stage === "forming" && (
@@ -215,7 +222,7 @@ export default function Experience() {
               key="forming"
               {...fade}
               transition={{ duration: 0.5, ease }}
-              className="font-mono text-[10px] tracking-[0.3em] sm:text-[11px]"
+              className="mx-auto mt-auto w-fit font-mono text-[10px] tracking-[0.3em] sm:mt-0 sm:text-[11px]"
               style={{ color: TEXT.tertiary }}
             >
               INITIALISING
@@ -226,7 +233,7 @@ export default function Experience() {
           {stage === "intro" && (
             <motion.div
               key="intro"
-              className="w-full max-w-lg text-center"
+              className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center text-center sm:flex-none sm:block"
               initial="hidden"
               animate="show"
               exit={{ opacity: 0, y: -12, filter: "blur(4px)" }}
@@ -235,52 +242,48 @@ export default function Experience() {
                 show: { transition: { staggerChildren: 0.11, delayChildren: 0.1 } },
               }}
             >
-              {[
-                <img
-                  key="w"
-                  src="/ai%20inomation.png"
-                  alt={t.wordmark}
-                  className="mx-auto w-[clamp(230px,60vw,440px)]"
-                />,
-                <p
-                  key="l"
-                  className="mt-5 text-[15px] leading-relaxed sm:text-[17px]"
-                  style={{ color: TEXT.primary }}
+              {/* top band: eyebrow + wordmark */}
+              <motion.p
+                variants={introItemVariant}
+                className="mb-3 font-mono text-[9px] tracking-[0.28em]"
+                style={{ color: TEXT.tertiary }}
+              >
+                {t.presents}
+              </motion.p>
+              <motion.img
+                variants={introItemVariant}
+                src="/ai%20inomation.png"
+                alt={t.wordmark}
+                className="mx-auto w-[clamp(190px,46vw,440px)]"
+              />
+
+              {/* the logo particles show through here on mobile */}
+              <div className="flex-1 sm:hidden" />
+
+              {/* bottom band: lede, meta, cta */}
+              <motion.p
+                variants={introItemVariant}
+                className="mt-5 text-[15px] leading-relaxed sm:text-[17px]"
+                style={{ color: TEXT.primary }}
+              >
+                {t.lede}
+              </motion.p>
+              <motion.p
+                variants={introItemVariant}
+                className="mt-3 font-mono text-[10px] tracking-[0.16em] sm:text-[11px]"
+                style={{ color: TEXT.tertiary }}
+              >
+                {t.meta}
+              </motion.p>
+              <motion.div variants={introItemVariant} className="mt-9 w-full sm:w-auto">
+                <button
+                  onClick={() => setStage("quiz")}
+                  className="group relative w-full overflow-hidden rounded-full px-8 py-4 text-[15px] font-medium transition-transform active:scale-[0.98] sm:w-auto"
+                  style={{ background: BRAND.logoBlue, color: BRAND.void, minHeight: 52 }}
                 >
-                  {t.lede}
-                </p>,
-                <p
-                  key="m"
-                  className="mt-3 font-mono text-[10px] tracking-[0.16em] sm:text-[11px]"
-                  style={{ color: TEXT.tertiary }}
-                >
-                  {t.meta}
-                </p>,
-                <div key="c" className="mt-9">
-                  <button
-                    onClick={() => setStage("quiz")}
-                    className="group relative w-full overflow-hidden rounded-full px-8 py-4 text-[15px] font-medium transition-transform active:scale-[0.98] sm:w-auto"
-                    style={{ background: BRAND.logoBlue, color: BRAND.void, minHeight: 52 }}
-                  >
-                    {t.cta}
-                  </button>
-                </div>,
-              ].map((child, i) => (
-                <motion.div
-                  key={i}
-                  variants={{
-                    hidden: { opacity: 0, y: reduce ? 0 : 18, filter: reduce ? "none" : "blur(8px)" },
-                    show: {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                      transition: { duration: 0.75, ease },
-                    },
-                  }}
-                >
-                  {child}
-                </motion.div>
-              ))}
+                  {t.cta}
+                </button>
+              </motion.div>
             </motion.div>
           )}
 
@@ -290,7 +293,7 @@ export default function Experience() {
               key={`q-${qIndex}`}
               {...fade}
               transition={{ duration: 0.6, ease }}
-              className="w-full max-w-xl"
+              className="mx-auto mt-auto w-full max-w-xl sm:mt-0"
               style={contentScrim}
             >
               <div
@@ -402,7 +405,7 @@ export default function Experience() {
               key="inter"
               {...fade}
               transition={{ duration: 0.9, ease }}
-              className="max-w-md text-center text-[16px] leading-relaxed sm:text-[19px]"
+              className="mx-auto mt-auto w-full max-w-md text-center text-[16px] leading-relaxed sm:mt-0 sm:text-[19px]"
               style={{ color: TEXT.primary, letterSpacing: "-0.01em" }}
             >
               {t.interstitial}
@@ -415,7 +418,7 @@ export default function Experience() {
               key="res"
               {...fade}
               transition={{ duration: 0.7, ease }}
-              className="w-full max-w-md text-center"
+              className="mx-auto mt-auto w-full max-w-md text-center sm:mt-0"
               style={contentScrim}
             >
               <p

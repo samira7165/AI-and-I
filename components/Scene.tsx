@@ -150,7 +150,7 @@ function Rig({
     camera.position.z += (targetZ - camera.position.z) * 0.05;
     camera.position.x += (drift.x * 0.35 - camera.position.x) * 0.04;
     camera.position.y += (drift.y * 0.25 - camera.position.y) * 0.04;
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, mobile ? 0.35 : 0, 0);
   });
 
   return (

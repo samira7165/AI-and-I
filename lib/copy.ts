@@ -9,6 +9,7 @@ export type Question = {
 
 export type Copy = {
   eyebrow: string;
+  presents: string;
   wordmark: string;
   lede: string;
   meta: string;
@@ -33,6 +34,7 @@ export type Copy = {
 export const COPY: Record<"en" | "bn", Copy> = {
   en: {
     eyebrow: "GRAMEENPHONE",
+    presents: "GRAMEENPHONE PRESENTS",
     wordmark: "Ai&i",
     lede: "A short calibration on how you think about AI.",
     meta: "Three questions · Two minutes · One invitation",
@@ -102,6 +104,7 @@ export const COPY: Record<"en" | "bn", Copy> = {
 
   bn: {
     eyebrow: "গ্রামীণফোন",
+    presents: "গ্রামীণফোন উপস্থাপন করছে",
     wordmark: "Ai&i",
     lede: "AI নিয়ে আপনার ভাবনার একটি সংক্ষিপ্ত মূল্যায়ন।",
     meta: "তিনটি প্রশ্ন · দুই মিনিট · একটি আমন্ত্রণ",
