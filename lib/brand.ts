@@ -18,6 +18,7 @@ export const BRAND = {
 
   // Functional
   success: "#3ECF8E",
+  error: "#F2545B",
   surface: "#070B1C",
   void: "#03050E",
 } as const;

@@ -67,12 +67,19 @@ interface Props {
   formation: number;
   scale: number;
   mobile: boolean;
+  /** increments on every correct quiz answer, triggering a brief heat pulse */
+  pulse: number;
 }
 
-export default function LogoParticles({ formation, scale, mobile }: Props) {
+export default function LogoParticles({ formation, scale, mobile, pulse }: Props) {
   const points = useRef<THREE.Points>(null);
   const [samples, setSamples] = useState<Sample[] | null>(null);
   const { clock } = useThree();
+  const pulseAt = useRef(-999);
+
+  useEffect(() => {
+    if (pulse > 0) pulseAt.current = clock.elapsedTime;
+  }, [pulse, clock]);
 
   const step = mobile ? 3 : 2;
 
@@ -161,6 +168,7 @@ export default function LogoParticles({ formation, scale, mobile }: Props) {
           uForm: { value: 0 },
           uTime: { value: 0 },
           uPixelRatio: { value: 1 },
+          uPulse: { value: 0 },
         },
         vertexShader: /* glsl */ `
           attribute vec3 aTarget;
@@ -205,6 +213,8 @@ export default function LogoParticles({ formation, scale, mobile }: Props) {
           varying vec3 vColor;
           varying float vForm;
 
+          uniform float uPulse;
+
           void main() {
             vec2 uv = gl_PointCoord - 0.5;
             float d = length(uv);
@@ -217,6 +227,8 @@ export default function LogoParticles({ formation, scale, mobile }: Props) {
 
             // Travelling particles glow hotter, settle as they arrive.
             float heat = mix(1.55, 1.0, vForm);
+            // Correct-answer reward: a brief heat boost that decays away.
+            heat *= 1.0 + uPulse * 0.5;
 
             gl_FragColor = vec4(vColor * heat + core, alpha * (0.35 + vForm * 0.65));
           }
@@ -230,6 +242,10 @@ export default function LogoParticles({ formation, scale, mobile }: Props) {
     material.uniforms.uForm.value = formation;
     material.uniforms.uTime.value = clock.elapsedTime;
     material.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
+
+    // Decay the correct-answer heat pulse over ~500ms.
+    const sincePulse = clock.elapsedTime - pulseAt.current;
+    material.uniforms.uPulse.value = sincePulse < 0.5 ? 1 - sincePulse / 0.5 : 0;
 
     // Slow parallax rotation — reads as depth without spinning the mark.
     if (points.current) {

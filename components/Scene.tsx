@@ -132,9 +132,11 @@ function Dust({ count, spread }: { count: number; spread: number }) {
 function Rig({
   formation,
   drift,
+  pulse,
 }: {
   formation: number;
   drift: { x: number; y: number };
+  pulse: number;
 }) {
   const { camera, size } = useThree();
   const aspect = size.width / size.height;
@@ -156,7 +158,7 @@ function Rig({
   return (
     <>
       <Backlight formation={formation} scale={scale} />
-      <LogoParticles formation={formation} scale={scale} mobile={mobile} />
+      <LogoParticles formation={formation} scale={scale} mobile={mobile} pulse={pulse} />
       <Dust count={mobile ? 260 : 520} spread={scale * 5} />
     </>
   );
@@ -167,9 +169,11 @@ function Rig({
 export default function Scene({
   formation,
   drift,
+  pulse,
 }: {
   formation: number;
   drift: { x: number; y: number };
+  pulse: number;
 }) {
   return (
     <Canvas
@@ -179,7 +183,7 @@ export default function Scene({
       style={{ background: "transparent" }}
     >
       <Suspense fallback={null}>
-        <Rig formation={formation} drift={drift} />
+        <Rig formation={formation} drift={drift} pulse={pulse} />
         <EffectComposer multisampling={0}>
           <Bloom
             intensity={0.75}

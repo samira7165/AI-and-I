@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { COPY } from "@/lib/copy";
 import { BRAND, TEXT } from "@/lib/brand";
+import { splash } from "@/lib/splash";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
@@ -24,6 +25,7 @@ export default function Experience() {
   const [analysing, setAnalysing] = useState(false);
   const [drift, setDrift] = useState({ x: 0, y: 0 });
   const [arOpen, setArOpen] = useState(false);
+  const [pulse, setPulse] = useState(0);
 
   const reduce = useReducedMotion();
   const t = COPY[lang];
@@ -75,9 +77,16 @@ export default function Experience() {
 
   /* ---------- answering ---------- */
   const answer = useCallback(
-    (choice: number) => {
+    (choice: number, el: HTMLElement) => {
       if (picked !== null) return;
       const correct = choice === t.questions[qIndex].correct;
+
+      // reward should feel instant — fires on tap, not after the analysing delay
+      if (correct) {
+        splash(el);
+        setPulse((p) => p + 1);
+      }
+
       setPicked(choice);
       setAnalysing(true);
 
@@ -151,7 +160,7 @@ export default function Experience() {
     >
       {/* ---------- 3D layer ---------- */}
       <div className="fixed inset-0 z-0">
-        <Scene formation={formation} drift={drift} />
+        <Scene formation={formation} drift={drift} pulse={pulse} />
       </div>
 
       {/* vertical scrim keeps text legible over the bloom */}
@@ -297,12 +306,19 @@ export default function Experience() {
               style={contentScrim}
             >
               <div
-                className="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em]"
+                className="flex items-start gap-2 font-mono text-[10px] tracking-[0.18em]"
                 style={{ color: BRAND.logoBlue }}
               >
-                <span>{t.questions[qIndex].index}</span>
-                <span style={{ color: TEXT.hairline }}>/</span>
-                <span style={{ color: TEXT.secondary }}>{t.questions[qIndex].tag}</span>
+                <span className="shrink-0">{t.questions[qIndex].index}</span>
+                <span className="shrink-0" style={{ color: TEXT.hairline }}>
+                  /
+                </span>
+                <span
+                  className="font-sans text-[11px] leading-snug tracking-normal"
+                  style={{ color: TEXT.secondary }}
+                >
+                  {t.questions[qIndex].tag}
+                </span>
               </div>
 
               <h2
@@ -315,18 +331,38 @@ export default function Experience() {
               <div className="mt-6 space-y-2">
                 {t.questions[qIndex].options.map((opt, i) => {
                   const isCorrect = i === t.questions[qIndex].correct;
+                  const isPicked = i === picked;
                   const locked = picked !== null;
                   const revealed = locked && !analysing;
 
-                  const border = revealed && isCorrect ? BRAND.success : TEXT.hairline;
-                  const tint =
-                    revealed && isCorrect ? `${BRAND.success}14` : "rgba(255,255,255,0.02)";
-                  const dim = revealed && !isCorrect ? 0.38 : 1;
+                  const showCorrect = revealed && isCorrect;
+                  const showWrong = revealed && isPicked && !isCorrect;
+                  const untouched = revealed && !showCorrect && !showWrong;
+
+                  const border = showCorrect
+                    ? BRAND.success
+                    : showWrong
+                    ? BRAND.error
+                    : TEXT.hairline;
+                  const tint = showCorrect
+                    ? `${BRAND.success}14`
+                    : showWrong
+                    ? `${BRAND.error}14`
+                    : revealed
+                    ? "transparent"
+                    : "rgba(255,255,255,0.02)";
+                  const dim = untouched ? 0.38 : 1;
+                  const glyphColor = showCorrect
+                    ? BRAND.success
+                    : showWrong
+                    ? BRAND.error
+                    : TEXT.tertiary;
+                  const glyph = showCorrect ? "✓" : showWrong ? "✕" : String.fromCharCode(65 + i);
 
                   return (
                     <button
                       key={i}
-                      onClick={() => answer(i)}
+                      onClick={(e) => answer(i, e.currentTarget)}
                       disabled={locked}
                       className="flex w-full items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-all duration-300 active:scale-[0.99]"
                       style={{
@@ -339,11 +375,9 @@ export default function Experience() {
                     >
                       <span
                         className="mt-px font-mono text-[11px]"
-                        style={{
-                          color: revealed && isCorrect ? BRAND.success : TEXT.tertiary,
-                        }}
+                        style={{ color: glyphColor }}
                       >
-                        {String.fromCharCode(65 + i)}
+                        {glyph}
                       </span>
                       <span
                         className="text-[14px] leading-snug sm:text-[15px]"
