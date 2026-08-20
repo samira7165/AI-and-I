@@ -236,13 +236,12 @@ export default function Experience() {
               }}
             >
               {[
-                <h1
+                <img
                   key="w"
-                  className="text-[clamp(3rem,17vw,6.5rem)] font-semibold leading-[0.9]"
-                  style={{ color: BRAND.white, letterSpacing: "-0.045em" }}
-                >
-                  {t.wordmark}
-                </h1>,
+                  src="/ai%20inomation.png"
+                  alt={t.wordmark}
+                  className="mx-auto w-[clamp(230px,60vw,440px)]"
+                />,
                 <p
                   key="l"
                   className="mt-5 text-[15px] leading-relaxed sm:text-[17px]"
@@ -478,12 +477,11 @@ export default function Experience() {
                     {invitationId}
                   </span>
                 </div>
-                <p
-                  className="mt-2 text-[26px] font-semibold"
-                  style={{ color: BRAND.white, letterSpacing: "-0.03em" }}
-                >
-                  {t.wordmark}
-                </p>
+                <img
+                  src="/ai%20inomation.png"
+                  alt={t.wordmark}
+                  className="mt-2 h-[30px] w-auto"
+                />
                 <p
                   className="mt-1 font-mono text-[10px] tracking-[0.14em]"
                   style={{ color: TEXT.secondary }}
