@@ -1,10 +1,16 @@
+// Only the question set and section titles are client-approved.
+// All surrounding copy is placeholder pending review.
+
+// TODO(client): confirm event date and venue before launch
+export const EVENT_DATE = "";
+export const EVENT_CITY = "";
+
 export type Question = {
   index: string;
   tag: string;
   prompt: string;
   options: string[];
   correct: number;
-  insight: string;
 };
 
 export type Copy = {
@@ -58,8 +64,6 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "Replacing the report owner.",
         ],
         correct: 1,
-        insight:
-          "Automating a recurring report frees roughly 150 hours per team each year.",
       },
       {
         index: "02",
@@ -72,8 +76,6 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "Copying AI outputs without review.",
         ],
         correct: 1,
-        insight:
-          "Approved tooling is the single largest reduction in data-exposure incidents.",
       },
       {
         index: "03",
@@ -87,11 +89,10 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "The company purchases more AI software.",
         ],
         correct: 1,
-        insight:
-          "Cross-functional use — not headcount or licences — is what separates adoption from pilots.",
       },
     ],
     resultEyebrow: "CALIBRATION COMPLETE",
+    // TODO(client): approve result messaging
     resultPerfect: "You are operating with clarity.",
     resultPartial: "You are close. The event will fill in the rest.",
     scoreLabel: "SCORE",
@@ -128,8 +129,6 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "রিপোর্ট মালিককে প্রতিস্থাপন করা।",
         ],
         correct: 1,
-        insight:
-          "একটি নিয়মিত রিপোর্ট স্বয়ংক্রিয় করলে বছরে দলপ্রতি প্রায় ১৫০ ঘণ্টা সাশ্রয় হয়।",
       },
       {
         index: "০২",
@@ -142,8 +141,6 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "পর্যালোচনা ছাড়াই AI-এর আউটপুট কপি করা।",
         ],
         correct: 1,
-        insight:
-          "অনুমোদিত টুল ব্যবহারই তথ্য ফাঁসের ঝুঁকি সবচেয়ে বেশি কমায়।",
       },
       {
         index: "০৩",
@@ -157,11 +154,10 @@ export const COPY: Record<"en" | "bn", Copy> = {
           "প্রতিষ্ঠান আরও AI সফটওয়্যার কেনে।",
         ],
         correct: 1,
-        insight:
-          "লাইসেন্স বা জনবল নয় — বিভিন্ন দলের ব্যবহারই পাইলট থেকে গ্রহণকে আলাদা করে।",
       },
     ],
     resultEyebrow: "মূল্যায়ন সম্পন্ন",
+    // TODO(client): approve result messaging
     resultPerfect: "আপনার বোঝাপড়া স্পষ্ট।",
     resultPartial: "আপনি কাছাকাছি। বাকিটা ইভেন্টে পূর্ণ হবে।",
     scoreLabel: "স্কোর",

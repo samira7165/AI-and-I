@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { COPY } from "@/lib/copy";
+import { COPY, EVENT_DATE, EVENT_CITY } from "@/lib/copy";
 import { BRAND, TEXT } from "@/lib/brand";
 import { splash } from "@/lib/splash";
 
@@ -124,10 +124,6 @@ export default function Experience() {
     setPicked(null);
     setStage("intro");
   };
-
-  const invitationId = useRef(
-    `AI-2026-${Math.floor(1000 + Math.random() * 9000)}`
-  ).current;
 
   /* ---------- shared motion ---------- */
   const ease = [0.16, 0.8, 0.24, 1] as const;
@@ -390,46 +386,38 @@ export default function Experience() {
                 })}
               </div>
 
-              {/* analysing / insight */}
-              <div className="mt-5 min-h-[44px]">
-                <AnimatePresence mode="wait">
-                  {analysing && (
-                    <motion.div
-                      key="an"
-                      {...fade}
-                      transition={{ duration: 0.3 }}
-                      className="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em]"
-                      style={{ color: TEXT.tertiary }}
-                    >
-                      <motion.span
-                        animate={{ opacity: [0.25, 1, 0.25] }}
-                        transition={{ duration: 1.1, repeat: Infinity }}
-                        className="inline-block h-1 w-1 rounded-full"
-                        style={{ background: BRAND.logoBlue }}
-                      />
-                      {t.analysing}
-                    </motion.div>
-                  )}
+              {/* analysing / reveal */}
+              <AnimatePresence mode="wait">
+                {analysing && (
+                  <motion.div
+                    key="an"
+                    {...fade}
+                    transition={{ duration: 0.3 }}
+                    className="mt-6 flex items-center gap-2 font-mono text-[10px] tracking-[0.18em]"
+                    style={{ color: TEXT.tertiary }}
+                  >
+                    <motion.span
+                      animate={{ opacity: [0.25, 1, 0.25] }}
+                      transition={{ duration: 1.1, repeat: Infinity }}
+                      className="inline-block h-1 w-1 rounded-full"
+                      style={{ background: BRAND.logoBlue }}
+                    />
+                    {t.analysing}
+                  </motion.div>
+                )}
 
-                  {picked !== null && !analysing && (
-                    <motion.div key="in" {...fade} transition={{ duration: 0.5, ease }}>
-                      <p
-                        className="border-l pl-3 text-[13px] leading-relaxed"
-                        style={{ borderColor: TEXT.hairline, color: TEXT.secondary }}
-                      >
-                        {t.questions[qIndex].insight}
-                      </p>
-                      <button
-                        onClick={advance}
-                        className="mt-5 w-full rounded-full px-6 py-3.5 text-[14px] font-medium active:scale-[0.98] sm:w-auto"
-                        style={{ background: BRAND.white, color: BRAND.void, minHeight: 48 }}
-                      >
-                        {qIndex < total - 1 ? "Continue" : "See result"}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                {picked !== null && !analysing && (
+                  <motion.div key="in" {...fade} transition={{ duration: 0.5, ease }} className="mt-6">
+                    <button
+                      onClick={advance}
+                      className="w-full rounded-full px-6 py-3.5 text-[14px] font-medium active:scale-[0.98] sm:w-auto"
+                      style={{ background: BRAND.white, color: BRAND.void, minHeight: 48 }}
+                    >
+                      {qIndex < total - 1 ? "Continue" : "See result"}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
 
@@ -500,31 +488,27 @@ export default function Experience() {
                   backdropFilter: "blur(12px)",
                 }}
               >
-                <div className="flex items-baseline justify-between">
-                  <span
-                    className="font-mono text-[9px] tracking-[0.2em]"
-                    style={{ color: TEXT.tertiary }}
-                  >
-                    {t.invitationLabel}
-                  </span>
-                  <span
-                    className="font-mono text-[9px] tracking-[0.14em]"
-                    style={{ color: TEXT.tertiary }}
-                  >
-                    {invitationId}
-                  </span>
-                </div>
+                {/* No client-generated invitation ID: a real credential must
+                    be issued server-side if the venue needs to validate entry. */}
+                <span
+                  className="font-mono text-[9px] tracking-[0.2em]"
+                  style={{ color: TEXT.tertiary }}
+                >
+                  {t.invitationLabel}
+                </span>
                 <img
                   src="/ai%20inomation.png"
                   alt={t.wordmark}
                   className="mt-2 h-[30px] w-auto"
                 />
-                <p
-                  className="mt-1 font-mono text-[10px] tracking-[0.14em]"
-                  style={{ color: TEXT.secondary }}
-                >
-                  {t.issued} 19.08.2026 · DHAKA
-                </p>
+                {EVENT_DATE && EVENT_CITY && (
+                  <p
+                    className="mt-1 font-mono text-[10px] tracking-[0.14em]"
+                    style={{ color: TEXT.secondary }}
+                  >
+                    {t.issued} {EVENT_DATE} · {EVENT_CITY}
+                  </p>
+                )}
               </div>
 
               <button
@@ -583,10 +567,9 @@ export default function Experience() {
               >
                 CAMERA REQUIRED
               </p>
+              {/* TODO(dev): wire this sheet to the WebAR provider via the onArOpen handler */}
               <p className="mt-3 text-[14px] leading-relaxed" style={{ color: TEXT.primary }}>
-                Front-end preview. Connect your WebAR provider to the{" "}
-                <code style={{ color: BRAND.logoBlue }}>onArOpen</code> handler to launch the
-                live invitation.
+                AR preview is not yet available.
               </p>
               <button
                 onClick={() => setArOpen(false)}

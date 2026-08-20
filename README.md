@@ -62,6 +62,12 @@ assembled and all transitions become instant. The experience stays complete.
 
 - **AR handler.** The result screen's AR button opens a placeholder sheet.
   Connect your WebAR provider in the `arOpen` branch of `Experience.tsx`.
-- **Invitation ID** is generated client-side for display. Issue it server-side
-  if it needs to be verifiable at the venue.
-- **Event date** is hard-coded as `19.08.2026 · DHAKA` in `lib/copy.ts`.
+- **Invitation ID.** There is no client-side ID anymore — a prior version
+  fabricated one for display, which isn't verifiable at a venue. If the event
+  needs a checkable credential, issue it server-side.
+- **Event date / venue.** `EVENT_DATE` and `EVENT_CITY` in `lib/copy.ts` are
+  empty pending client confirmation; the invitation card's issued line only
+  renders once both are filled in.
+- **Result messaging** (`resultPerfect` / `resultPartial`) and most of the
+  surrounding copy in `lib/copy.ts` are placeholder wording pending client
+  approval — only the question set and section titles are approved content.
